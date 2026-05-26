@@ -8,6 +8,7 @@
       name="description"
       content="Research page for TRACE: Trajectory-Routed Causal Memory for Delayed-Evidence Visuomotor Imitation."
     />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -24,7 +25,32 @@
         <a href="#paper-data">Data</a>
         <a href="#implementation">Implementation</a>
       </nav>
-      <a class="header-action" href="assets/paper/trace-paper.pdf">PDF</a>
+      <div class="header-actions">
+        <div class="more-works" data-more-works>
+          <button
+            class="more-works-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="moreWorksMenu"
+          >
+            <span>More Works</span>
+            <span class="more-works-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="more-works-menu" id="moreWorksMenu" role="menu" aria-hidden="true" inert>
+            <a
+              class="more-works-item"
+              href="https://jeong-zju.github.io/RSS-TriPilot-FF-Page/"
+              target="_blank"
+              rel="noopener"
+              role="menuitem"
+            >
+              <span>TriPilot-FF: Haptic-Guided Demonstration Shaping for Mobile Bimanual Policy Learning</span>
+              <small>Project page</small>
+            </a>
+          </div>
+        </div>
+        <a class="header-action" href="assets/paper/trace-paper.pdf">PDF</a>
+      </div>
     </header>
 
     <main id="top">

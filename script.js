@@ -1516,6 +1516,53 @@ function updateScrollMeter() {
   meter.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
 }
 
+function initMoreWorksDropdown() {
+  const root = document.querySelector("[data-more-works]");
+  if (!root) return;
+
+  const toggle = root.querySelector(".more-works-toggle");
+  const menu = root.querySelector(".more-works-menu");
+  if (!toggle || !menu) return;
+
+  const closeMenu = () => {
+    root.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    menu.setAttribute("aria-hidden", "true");
+    menu.inert = true;
+  };
+
+  const openMenu = () => {
+    root.classList.add("is-open");
+    toggle.setAttribute("aria-expanded", "true");
+    menu.setAttribute("aria-hidden", "false");
+    menu.inert = false;
+  };
+
+  toggle.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (root.classList.contains("is-open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  menu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  root.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !root.classList.contains("is-open")) return;
+    closeMenu();
+    toggle.focus();
+  });
+}
+
 document.querySelectorAll(".flow-node").forEach((button) => {
   button.addEventListener("click", () => updateProblemStep(button.dataset.node));
   button.addEventListener("keydown", (event) => {
@@ -1588,4 +1635,5 @@ renderChart("main");
 initPaperDataExplorer();
 initResultVideoGallery();
 initRolloutFigure();
+initMoreWorksDropdown();
 updateScrollMeter();
