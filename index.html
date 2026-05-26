@@ -21,6 +21,7 @@
         <a href="#problem">Problem</a>
         <a href="#method">Method</a>
         <a href="#results">Results</a>
+        <a href="#paper-data">Data</a>
         <a href="#implementation">Implementation</a>
       </nav>
       <a class="header-action" href="assets/paper/trace-paper.pdf">PDF</a>
@@ -92,7 +93,6 @@
         </div>
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="hero-content">
-          <p class="eyebrow">CoRL 2026 Submission / Real Robot Delayed-Evidence Manipulation</p>
           <h1 id="heroTitle">
             TRACE: Trajectory-Routed Causal Memory for Delayed-Evidence Visuomotor Imitation
           </h1>
@@ -419,16 +419,331 @@
           </div>
         </div>
 
-        <figure class="paper-figure figure-wide">
-          <img
-            src="assets/figures/rollout_results_combined.png"
-            alt="Book rollout results and memory diagnostics"
-          />
-          <figcaption>
-            The rollout figure shows early cue, ambiguous transit, target selection, and memory
-            signals for the Book task.
+        <section class="result-video-section" id="result-videos" aria-labelledby="resultVideosTitle">
+          <div class="result-video-head">
+            <div>
+              <p class="section-kicker">Rollout videos</p>
+              <h3 id="resultVideosTitle">
+                Real-robot clips show the cue, shared segment, and delayed branch.
+              </h3>
+            </div>
+            <p>
+              The video set collects the full Book, Laundry, Cable, and Medicine rollouts used to
+              illustrate the delayed-evidence evaluation behind the stage-progress tables.
+            </p>
+          </div>
+
+          <div class="result-video-layout">
+            <figure class="result-feature-video">
+              <video
+                id="resultFeatureVideo"
+                src="assets/video/book_desk_web.mp4"
+                poster="assets/frames/book_desk/book_desk_37pct_t33p713s_960w.jpg"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                controls
+              ></video>
+              <figcaption>
+                <span id="resultFeatureKicker">Book / desk origin</span>
+                <strong id="resultFeatureTitle">Origin-conditioned relocation.</strong>
+                <p id="resultFeatureCopy">
+                  The book starts on the desk route, then moves through a shared carry segment before
+                  the policy must select the origin-consistent placement.
+                </p>
+                <dl>
+                  <div>
+                    <dt>TRACE Regression</dt>
+                    <dd id="resultFeatureScore">83.00% Book progress</dd>
+                  </div>
+                </dl>
+              </figcaption>
+            </figure>
+
+            <div class="result-video-rail" role="list" aria-label="Experiment rollout videos">
+              <button
+                class="result-video-card active"
+                type="button"
+                data-result-video="bookDesk"
+                aria-pressed="true"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/book_desk/book_desk_37pct_t33p713s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Book</small>
+                  <strong>Desk-origin route</strong>
+                  <em>83.00% progress</em>
+                </span>
+              </button>
+              <button
+                class="result-video-card"
+                type="button"
+                data-result-video="bookBed"
+                aria-pressed="false"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/book_bed/book_bed_37pct_t30p932s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Book</small>
+                  <strong>Bed-origin route</strong>
+                  <em>83.00% progress</em>
+                </span>
+              </button>
+              <button
+                class="result-video-card"
+                type="button"
+                data-result-video="laundry"
+                aria-pressed="false"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/laundry_clean/laundry_clean_37pct_t39p400s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Laundry</small>
+                  <strong>Clean-side branch</strong>
+                  <em>81.00% progress</em>
+                </span>
+              </button>
+              <button
+                class="result-video-card"
+                type="button"
+                data-result-video="cable"
+                aria-pressed="false"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/cable/cable_37pct_t24p451s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Cable</small>
+                  <strong>Matched-device branch</strong>
+                  <em>51.00% progress</em>
+                </span>
+              </button>
+              <button
+                class="result-video-card"
+                type="button"
+                data-result-video="medicineRight"
+                aria-pressed="false"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/medicine_right/medicine_right_37pct_t31p101s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Medicine</small>
+                  <strong>Right-tray branch</strong>
+                  <em>76.67% progress</em>
+                </span>
+              </button>
+              <button
+                class="result-video-card"
+                type="button"
+                data-result-video="medicineLeft"
+                aria-pressed="false"
+                aria-controls="resultFeatureVideo"
+              >
+                <img
+                  src="assets/frames/medicine_left/medicine_left_37pct_t27p853s_960w.jpg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span>
+                  <small>Medicine</small>
+                  <strong>Left-tray branch</strong>
+                  <em>76.67% progress</em>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <figure class="paper-figure figure-wide rollout-figure">
+          <div
+            class="rollout-stage"
+            id="rolloutStage"
+            style="--spotlight-x: 6%; --spotlight-y: 32%; --card-x: 12%; --card-y: 12%;"
+          >
+            <img
+              src="assets/figures/rollout_results_combined.png"
+              alt="Book rollout results and memory diagnostics"
+            />
+            <svg class="rollout-trails" viewBox="0 0 100 55.7" aria-hidden="true">
+              <path class="rollout-trail active" data-rollout-trail="cue" d="M5 27 C9 27 10 33 13 35" />
+              <path
+                class="rollout-trail"
+                data-rollout-trail="transit"
+                d="M15 35 C22 45 43 42 52 35"
+              />
+              <path
+                class="rollout-trail"
+                data-rollout-trail="target"
+                d="M51 33 C54 23 57 20 61 23"
+              />
+              <path
+                class="rollout-trail"
+                data-rollout-trail="memory"
+                d="M78 28 C83 23 90 23 95 28"
+              />
+            </svg>
+            <span
+              class="rollout-highlight active"
+              data-rollout-highlight="cue"
+              style="--x: 0%; --y: 3.7%; --w: 8.95%; --h: 47.2%;"
+            ></span>
+            <span
+              class="rollout-highlight active"
+              data-rollout-highlight="cue"
+              style="--x: 0%; --y: 50.8%; --w: 8.95%; --h: 48.8%;"
+            ></span>
+            <span
+              class="rollout-highlight"
+              data-rollout-highlight="transit"
+              style="--x: 18.25%; --y: 3.7%; --w: 26.9%; --h: 95.9%;"
+            ></span>
+            <span
+              class="rollout-highlight"
+              data-rollout-highlight="target"
+              style="--x: 54.55%; --y: 3.7%; --w: 17.7%; --h: 47.2%;"
+            ></span>
+            <span
+              class="rollout-highlight"
+              data-rollout-highlight="target"
+              style="--x: 54.55%; --y: 52.3%; --w: 17.7%; --h: 47.2%;"
+            ></span>
+            <span
+              class="rollout-highlight"
+              data-rollout-highlight="memory"
+              style="--x: 72.7%; --y: 3.2%; --w: 26.75%; --h: 94.6%;"
+            ></span>
+            <button
+              class="rollout-hotspot active"
+              type="button"
+              data-rollout="cue"
+              style="--x: 0%; --y: 3.7%; --w: 8.95%; --h: 95.9%; --marker-x: 55%; --marker-y: 28%;"
+              aria-pressed="true"
+              aria-describedby="rolloutDetailCopy"
+            >
+              <span class="rollout-marker"></span>
+              <span class="rollout-hotspot-label">Early cue</span>
+            </button>
+            <button
+              class="rollout-hotspot"
+              type="button"
+              data-rollout="transit"
+              style="--x: 18.25%; --y: 3.7%; --w: 26.9%; --h: 95.9%; --marker-x: 50%; --marker-y: 42%;"
+              aria-pressed="false"
+              aria-describedby="rolloutDetailCopy"
+            >
+              <span class="rollout-marker"></span>
+              <span class="rollout-hotspot-label">Ambiguous transit</span>
+            </button>
+            <button
+              class="rollout-hotspot"
+              type="button"
+              data-rollout="target"
+              style="--x: 54.55%; --y: 3.7%; --w: 17.7%; --h: 95.9%; --marker-x: 51%; --marker-y: 42%;"
+              aria-pressed="false"
+              aria-describedby="rolloutDetailCopy"
+            >
+              <span class="rollout-marker"></span>
+              <span class="rollout-hotspot-label">Target selection</span>
+            </button>
+            <button
+              class="rollout-hotspot"
+              type="button"
+              data-rollout="memory"
+              style="--x: 72.7%; --y: 3.2%; --w: 26.75%; --h: 94.6%; --marker-x: 50%; --marker-y: 66%;"
+              aria-pressed="false"
+              aria-describedby="rolloutDetailCopy"
+            >
+              <span class="rollout-marker"></span>
+              <span class="rollout-hotspot-label">Memory signals</span>
+            </button>
+            <aside class="rollout-tooltip" aria-hidden="true">
+              <span id="rolloutFloatingKicker">Early cue</span>
+              <strong id="rolloutFloatingTitle">TRACE writes the origin evidence while it is visible.</strong>
+            </aside>
+          </div>
+          <figcaption class="rollout-caption" aria-live="polite">
+            <span>
+              The rollout figure shows early cue, ambiguous transit, target selection, and memory
+              signals for the Book task.
+            </span>
+            <strong id="rolloutDetailTitle">TRACE writes the origin evidence while it is visible.</strong>
+            <span id="rolloutDetailCopy">
+              The initial book origin is visible at the start, so the memory update can store the
+              cue before the later views become similar.
+            </span>
           </figcaption>
         </figure>
+
+        <section class="paper-data-section" id="paper-data" aria-labelledby="paperDataTitle">
+          <div class="paper-data-head">
+            <div>
+              <p class="section-kicker">Paper Data Explorer</p>
+              <h3 id="paperDataTitle">Effect and diagnostic results as interactive bar charts.</h3>
+            </div>
+            <p>
+              The controls below keep only result-bearing tables: choose a data group, switch the
+              measured effect column, then hover any bar to inspect the exact reported value.
+            </p>
+          </div>
+
+          <div class="data-explorer">
+            <div
+              class="data-group-list"
+              id="dataGroupList"
+              role="tablist"
+              aria-label="Paper effect data groups"
+            ></div>
+
+            <div class="data-panel" id="dataPanel" role="tabpanel" aria-live="polite">
+              <div class="data-panel-top">
+                <div>
+                  <span class="data-source" id="dataSource">Table</span>
+                  <h4 id="dataTitle">Data group</h4>
+                  <p id="dataDescription"></p>
+                </div>
+                <div class="data-stat">
+                  <span id="dataStatLabel">Shown metric</span>
+                  <strong id="dataStatValue">Metric</strong>
+                </div>
+              </div>
+
+              <div
+                class="data-metric-tabs"
+                id="dataMetricTabs"
+                role="tablist"
+                aria-label="Data metrics"
+              ></div>
+
+              <div class="data-chart-wrap">
+                <div class="data-chart-axis" id="dataChartAxis"></div>
+                <div class="bar-chart data-chart" id="dataChart" aria-label="Selected paper data chart"></div>
+              </div>
+
+              <p class="data-note" id="dataNote"></p>
+            </div>
+          </div>
+        </section>
       </section>
 
       <section class="implementation-section" id="implementation">
@@ -447,52 +762,11 @@
             once per executed step.
           </figcaption>
         </figure>
-
-        <div class="implementation-grid">
-          <article>
-            <span>StreamingACT</span>
-            <h3>Regression adapter</h3>
-            <p>
-              <code>lerobot_policy_streaming_act</code> exposes path signatures, delta signatures,
-              visual prefix memory, and signature-indexed slot memory for action chunking.
-            </p>
-          </article>
-          <article>
-            <span>PrismDiffusion</span>
-            <h3>Diffusion adapter</h3>
-            <p>
-              <code>lerobot_policy_prism_diffusion</code> serializes the same memory controls and
-              maps the memory readout into diffusion conditioning.
-            </p>
-          </article>
-          <article>
-            <span>Runtime</span>
-            <h3>Online signatures</h3>
-            <p>
-              Deployment preprocessing accepts <code>observation.path_signature</code> and
-              <code>observation.delta_signature</code>, matching the paper's causal online
-              interface.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="source-section" aria-label="Visual source map">
-        <div class="narrow">
-          <p class="section-kicker">Visual Source Boundary</p>
-          <p>
-            Figures on this page come from assets referenced in
-            <code>CoRL_PRISM/corl_2026_prism/main.tex</code>. The hero background and method panel
-            use lightweight clips derived from task videos in
-            <code>CoRL_PRISM/corl_2026_prism/videos</code>.
-          </p>
-        </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <span>TRACE research page</span>
-      <a href="assets/paper/main.tex">LaTeX source copy</a>
       <a href="assets/paper/trace-paper.pdf">Paper PDF</a>
     </footer>
 

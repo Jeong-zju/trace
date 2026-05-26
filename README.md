@@ -16,7 +16,7 @@ The local server is only a convenience wrapper around Python's static file serve
 
 ## Visual Asset Rule
 
-All displayed raster figures are generated from figures explicitly referenced by
+Displayed raster figures are generated from figures explicitly referenced by
 `CoRL_PRISM/corl_2026_prism/main.tex`:
 
 - `figs/teaser.pdf`
@@ -25,5 +25,7 @@ All displayed raster figures are generated from figures explicitly referenced by
 - `figs/rollout_results_combined.pdf`
 - `figs/train_inference_overview.pdf`
 
-No video frames, long-exposure photos, or extra image assets outside the paper figures are used by
-the page.
+The page also uses rollout videos and extracted posters under `assets/video` and `assets/frames`.
+Hero and method previews use lightweight `*_demo.mp4` clips. The experiment-video gallery uses
+browser-compatible H.264 `*_web.mp4` derivatives of the full rollouts copied from
+`CoRL_PRISM/corl_2026_prism/videos`; the original 4K HEVC files are kept only as source media.
