@@ -136,6 +136,10 @@ button {
   font-weight: 700;
 }
 
+.header-action {
+  justify-self: end;
+}
+
 .header-action:hover,
 .hero-actions a:hover {
   background: var(--ink);
@@ -161,21 +165,47 @@ section {
   color: #ffffff;
 }
 
-.hero-image {
+.hero-video-wall {
   position: absolute;
   inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  background: #050706;
+}
+
+.hero-video-tile {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  background: #050706;
 }
 
 .hero-shade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(10, 14, 13, 0.9), rgba(10, 14, 13, 0.58) 46%, rgba(10, 14, 13, 0.18)),
-    linear-gradient(0deg, rgba(10, 14, 13, 0.82), rgba(10, 14, 13, 0) 45%);
+    linear-gradient(
+      90deg,
+      rgba(10, 14, 13, 0.92),
+      rgba(10, 14, 13, 0.62) 45%,
+      rgba(10, 14, 13, 0.22)
+    ),
+    linear-gradient(0deg, rgba(10, 14, 13, 0.86), rgba(10, 14, 13, 0.1) 50%);
+}
+
+.hero-shade::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  content: "";
+  opacity: 0.28;
 }
 
 .hero-content {
@@ -326,14 +356,14 @@ h3 {
 
 .problem-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.65fr);
+  grid-template-columns: minmax(280px, 0.48fr) minmax(0, 1fr);
   gap: 42px;
   align-items: stretch;
 }
 
 .memory-flow {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -342,13 +372,30 @@ h3 {
 }
 
 .flow-node {
-  min-height: 310px;
+  min-height: 132px;
+  border: 0;
   padding: 28px;
   background: var(--paper);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
 
+.flow-node:hover,
 .flow-node.active {
   background: var(--soft-green);
+}
+
+.flow-node:hover {
+  transform: translateX(3px);
+}
+
+.flow-node:focus-visible {
+  outline: 3px solid rgba(47, 110, 79, 0.35);
+  outline-offset: -3px;
 }
 
 .flow-node strong {
@@ -358,7 +405,7 @@ h3 {
 }
 
 .flow-node p,
-.equation-panel p,
+.problem-detail-panel p,
 .task-grid p,
 .implementation-grid p,
 .method-detail p,
@@ -368,11 +415,11 @@ h3 {
   line-height: 1.55;
 }
 
-.equation-panel {
-  display: flex;
-  min-height: 310px;
-  flex-direction: column;
-  justify-content: space-between;
+.problem-detail-panel {
+  display: grid;
+  min-height: 560px;
+  grid-template-rows: auto 1fr auto;
+  gap: 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 28px;
@@ -380,13 +427,107 @@ h3 {
   color: #ffffff;
 }
 
-.equation-panel p:last-child {
+.problem-detail-panel .section-kicker {
+  color: #f2b49e;
+}
+
+.problem-detail-copy h3 {
+  max-width: 740px;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 28px;
+}
+
+.problem-detail-copy p:last-child,
+.equation-strip p:last-child {
   margin-bottom: 0;
   color: rgba(255, 255, 255, 0.72);
 }
 
+.branch-visual {
+  display: grid;
+  grid-template-rows: 1fr 1fr auto;
+  gap: 12px;
+  align-self: stretch;
+  min-height: 270px;
+}
+
+.branch-lane {
+  display: grid;
+  grid-template-columns: 92px repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.lane-label {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.54);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.branch-token {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.branch-visual.phase-cue .cue-token,
+.branch-visual.phase-transit .current-token,
+.branch-visual.phase-branch .action-token,
+.branch-visual.phase-memory .cue-token,
+.branch-visual.phase-memory .action-token {
+  border-color: rgba(242, 180, 158, 0.58);
+  background: rgba(242, 180, 158, 0.16);
+  color: #ffffff;
+}
+
+.memory-bridge {
+  display: grid;
+  grid-template-columns: minmax(80px, 0.2fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.64);
+}
+
+.memory-bridge span {
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.memory-bridge strong {
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.branch-visual.phase-memory .memory-bridge span {
+  background: linear-gradient(90deg, #8bd3aa, #f2b49e);
+}
+
+.equation-strip {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: end;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 22px;
+}
+
 .equation {
-  margin-bottom: 32px;
+  margin-bottom: 0;
   color: #ffffff;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   font-size: 28px;
@@ -459,7 +600,7 @@ h3 {
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
   gap: 28px;
   margin-top: 28px;
-  align-items: center;
+  align-items: start;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 28px;
@@ -471,23 +612,64 @@ h3 {
   font-size: 18px;
 }
 
-.slot-visual {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-  align-items: end;
-  height: 220px;
-  min-height: 180px;
-  padding: 18px;
+.method-evidence {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--dark);
+  color: #ffffff;
 }
 
-.slot-visual span {
-  min-height: 18px;
-  height: var(--level);
-  border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(180deg, #9ad8b6, #2f6e4f);
+.method-evidence video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #050706;
+}
+
+.method-evidence figcaption {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.method-evidence figcaption span,
+.method-metric span {
+  color: #f2b49e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.method-evidence figcaption strong {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.method-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.method-metric {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  align-content: start;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.method-metric strong {
+  font-size: 23px;
+  line-height: 1.12;
 }
 
 .tasks-section {
@@ -747,6 +929,10 @@ h3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .problem-detail-panel {
+    min-height: auto;
+  }
+
   .task-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -767,14 +953,15 @@ h3 {
     padding: 78px 18px 58px;
   }
 
-  .hero-image {
-    object-position: center top;
+  .hero-video-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
   }
 
   .hero-shade {
     background:
-      linear-gradient(90deg, rgba(10, 14, 13, 0.94), rgba(10, 14, 13, 0.7)),
-      linear-gradient(0deg, rgba(10, 14, 13, 0.78), rgba(10, 14, 13, 0) 42%);
+      linear-gradient(90deg, rgba(10, 14, 13, 0.95), rgba(10, 14, 13, 0.72)),
+      linear-gradient(0deg, rgba(10, 14, 13, 0.8), rgba(10, 14, 13, 0.12) 48%);
   }
 
   h1 {
@@ -813,8 +1000,50 @@ h3 {
     min-height: auto;
   }
 
+  .problem-detail-panel {
+    padding: 20px;
+  }
+
+  .problem-detail-copy h3 {
+    font-size: 23px;
+  }
+
+  .branch-visual {
+    min-height: auto;
+  }
+
+  .branch-lane {
+    grid-template-columns: 1fr;
+  }
+
+  .branch-token {
+    min-height: 58px;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .memory-bridge {
+    grid-template-columns: 1fr;
+  }
+
+  .equation-strip {
+    grid-template-columns: 1fr;
+  }
+
   .equation {
     font-size: 21px;
+  }
+
+  .method-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .method-metric {
+    min-height: auto;
+  }
+
+  .method-metric strong {
+    font-size: 20px;
   }
 
   .bar-row {

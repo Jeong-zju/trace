@@ -20,7 +20,6 @@
       <nav class="nav-links" aria-label="Page sections">
         <a href="#problem">Problem</a>
         <a href="#method">Method</a>
-        <a href="#tasks">Tasks</a>
         <a href="#results">Results</a>
         <a href="#implementation">Implementation</a>
       </nav>
@@ -29,11 +28,68 @@
 
     <main id="top">
       <section class="hero" aria-labelledby="heroTitle">
-        <img
-          class="hero-image"
-          src="assets/figures/teaser.png"
-          alt="Delayed-evidence overview figure for TRACE"
-        />
+        <div class="hero-video-wall" aria-hidden="true">
+          <video
+            class="hero-video-tile"
+            src="assets/video/book_desk_demo.mp4"
+            poster="assets/frames/book_desk/book_desk_37pct_t33p713s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <video
+            class="hero-video-tile"
+            src="assets/video/laundry_clean_demo.mp4"
+            poster="assets/frames/laundry_clean/laundry_clean_37pct_t39p400s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <video
+            class="hero-video-tile"
+            src="assets/video/cable_demo.mp4"
+            poster="assets/frames/cable/cable_37pct_t24p451s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <video
+            class="hero-video-tile"
+            src="assets/video/medicine_right_demo.mp4"
+            poster="assets/frames/medicine_right/medicine_right_37pct_t31p101s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <video
+            class="hero-video-tile"
+            src="assets/video/book_bed_demo.mp4"
+            poster="assets/frames/book_bed/book_bed_37pct_t30p932s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <video
+            class="hero-video-tile"
+            src="assets/video/medicine_left_demo.mp4"
+            poster="assets/frames/medicine_left/medicine_left_37pct_t27p853s_960w.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+        </div>
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="hero-content">
           <p class="eyebrow">CoRL 2026 Submission / Real Robot Delayed-Evidence Manipulation</p>
@@ -98,40 +154,118 @@
         </div>
 
         <div class="problem-layout">
-          <article class="memory-flow" aria-label="Delayed-evidence sequence">
-            <div class="flow-node active" data-node="0">
+          <article class="memory-flow" role="tablist" aria-label="Delayed-evidence sequence">
+            <button
+              class="flow-node active"
+              id="problemStep0"
+              type="button"
+              role="tab"
+              data-node="0"
+              aria-selected="true"
+              aria-controls="problemDetail"
+            >
               <span>01</span>
               <strong>Early cue</strong>
               <p>The robot sees evidence such as object origin, garment side, or tray source.</p>
-            </div>
-            <div class="flow-node" data-node="1">
+            </button>
+            <button
+              class="flow-node"
+              id="problemStep1"
+              type="button"
+              role="tab"
+              data-node="1"
+              aria-selected="false"
+              aria-controls="problemDetail"
+            >
               <span>02</span>
               <strong>Shared transit</strong>
               <p>The cue leaves view while different histories pass through similar observations.</p>
-            </div>
-            <div class="flow-node" data-node="2">
+            </button>
+            <button
+              class="flow-node"
+              id="problemStep2"
+              type="button"
+              role="tab"
+              data-node="2"
+              aria-selected="false"
+              aria-controls="problemDetail"
+            >
               <span>03</span>
               <strong>Ambiguous branch</strong>
               <p>The next action depends on the causal history rather than the current frame alone.</p>
-            </div>
-            <div class="flow-node" data-node="3">
+            </button>
+            <button
+              class="flow-node"
+              id="problemStep3"
+              type="button"
+              role="tab"
+              data-node="3"
+              aria-selected="false"
+              aria-controls="problemDetail"
+            >
               <span>04</span>
               <strong>Memory readout</strong>
               <p>TRACE conditions the action policy on the stored evidence at decision time.</p>
-            </div>
+            </button>
           </article>
 
-          <aside class="equation-panel" aria-label="Delayed evidence condition">
-            <p class="equation">
-              x<sub>t-w+1:t</sub> &asymp; x'<sub>t-w+1:t</sub><br />
-              a<sup>*</sup><sub>t</sub>(H<sub>t</sub>) &ne;
-              a<sup>*</sup><sub>t</sub>(H'<sub>t</sub>)
-            </p>
-            <p>
-              A short observation window contains the latest information, but not necessarily the
-              decisive early evidence. The paper frames this as a delayed-evidence imitation
-              setting where the policy needs a fixed-size causal history summary.
-            </p>
+          <aside
+            class="problem-detail-panel"
+            id="problemDetail"
+            role="tabpanel"
+            aria-labelledby="problemStep0"
+            aria-live="polite"
+          >
+            <div class="problem-detail-copy">
+              <p class="section-kicker" id="problemKicker">01 / Early cue</p>
+              <h3 id="problemTitle">The histories are still visibly different.</h3>
+              <p id="problemCopy">
+                The robot observes the cue that will later determine the branch: origin, side,
+                tray source, or object identity. TRACE writes this visual-state evidence before it
+                leaves view.
+              </p>
+            </div>
+
+            <div
+              class="branch-visual phase-cue"
+              id="branchVisual"
+              aria-label="Two histories with matching current observations and divergent actions"
+            >
+              <div class="branch-lane">
+                <span class="lane-label">History A</span>
+                <strong class="branch-token cue-token" id="historyACue">Book begins on desk</strong>
+                <strong class="branch-token current-token" id="historyACurrent">
+                  cue still visible
+                </strong>
+                <strong class="branch-token action-token" id="historyAAction">
+                  branch not needed
+                </strong>
+              </div>
+              <div class="branch-lane">
+                <span class="lane-label">History B</span>
+                <strong class="branch-token cue-token" id="historyBCue">Book begins on bed</strong>
+                <strong class="branch-token current-token" id="historyBCurrent">
+                  cue still visible
+                </strong>
+                <strong class="branch-token action-token" id="historyBAction">
+                  branch not needed
+                </strong>
+              </div>
+              <div class="memory-bridge" id="memoryBridge">
+                <span></span>
+                <strong id="memoryBridgeLabel">TRACE stores the cue as memory content.</strong>
+              </div>
+            </div>
+
+            <div class="equation-strip">
+              <p class="equation" id="problemEquation">
+                cue(H<sub>t</sub>) = desk<br />
+                cue(H'<sub>t</sub>) = bed
+              </p>
+              <p id="problemEquationCopy">
+                At the beginning, the current observation can still identify the causal history.
+              </p>
+            </div>
           </aside>
         </div>
       </section>
@@ -150,26 +284,64 @@
           </figcaption>
         </figure>
 
-        <div class="method-grid">
-          <button class="method-step active" type="button" data-step="write">
+        <div class="method-grid" role="tablist" aria-label="TRACE memory stages">
+          <button
+            class="method-step active"
+            id="methodStepWrite"
+            type="button"
+            role="tab"
+            data-step="write"
+            aria-selected="true"
+            aria-controls="methodDetail"
+          >
             <span>Write</span>
             <strong>Encode current evidence</strong>
           </button>
-          <button class="method-step" type="button" data-step="route">
+          <button
+            class="method-step"
+            id="methodStepRoute"
+            type="button"
+            role="tab"
+            data-step="route"
+            aria-selected="false"
+            aria-controls="methodDetail"
+          >
             <span>Route</span>
             <strong>Address by path signature</strong>
           </button>
-          <button class="method-step" type="button" data-step="read">
+          <button
+            class="method-step"
+            id="methodStepRead"
+            type="button"
+            role="tab"
+            data-step="read"
+            aria-selected="false"
+            aria-controls="methodDetail"
+          >
             <span>Read</span>
             <strong>Select relevant slots</strong>
           </button>
-          <button class="method-step" type="button" data-step="adapt">
+          <button
+            class="method-step"
+            id="methodStepAdapt"
+            type="button"
+            role="tab"
+            data-step="adapt"
+            aria-selected="false"
+            aria-controls="methodDetail"
+          >
             <span>Adapt</span>
             <strong>Condition policy family</strong>
           </button>
         </div>
 
-        <div class="method-detail">
+        <div
+          class="method-detail"
+          id="methodDetail"
+          role="tabpanel"
+          aria-labelledby="methodStepWrite"
+          aria-live="polite"
+        >
           <div>
             <p class="section-kicker" id="methodKicker">Write</p>
             <h3 id="methodTitle">Visual-state evidence is stored when the cue is visible.</h3>
@@ -178,57 +350,32 @@
               the evidence before it disappears from the camera view.
             </p>
           </div>
-          <div class="slot-visual" aria-label="Illustrative memory slot activity">
-            <span style="--level: 78%"></span>
-            <span style="--level: 36%"></span>
-            <span style="--level: 62%"></span>
-            <span style="--level: 22%"></span>
-            <span style="--level: 54%"></span>
-            <span style="--level: 44%"></span>
-          </div>
-        </div>
-      </section>
-
-      <section class="tasks-section" id="tasks">
-        <div class="section-head">
-          <p class="section-kicker">Task Suite</p>
-          <h2>Five tasks ask the same question: can the policy remember the missing cue?</h2>
-        </div>
-
-        <figure class="paper-figure">
-          <img src="assets/figures/tasks_overview.png" alt="Delayed-evidence task overview" />
-          <figcaption>
-            Task-suite overview. The evaluated scenarios cover object identity, origin-conditioned
-            routes, garment-side decisions, cable-device matching, and medicine tray return.
-          </figcaption>
-        </figure>
-
-        <div class="task-grid" aria-label="Delayed-evidence tasks">
-          <article>
-            <span>Tool</span>
-            <h3>Object identity determines a later tool sequence.</h3>
-            <p>Initial identity is visible early, then must guide a later sequence choice.</p>
-          </article>
-          <article>
-            <span>Book</span>
-            <h3>Origin determines route and placement.</h3>
-            <p>The book travels through a similar path, but the final place depends on origin.</p>
-          </article>
-          <article>
-            <span>Laundry</span>
-            <h3>Origin side chooses brush or fold.</h3>
-            <p>Garments reach a common workspace before the correct branch is selected.</p>
-          </article>
-          <article>
-            <span>Cable</span>
-            <h3>Source side determines the matched device.</h3>
-            <p>Similar cable observations hide which functional source should be remembered.</p>
-          </article>
-          <article>
-            <span>Medicine</span>
-            <h3>Tray origin controls box selection and return.</h3>
-            <p>The same object must be associated with its earlier tray through later decisions.</p>
-          </article>
+          <figure class="method-evidence" aria-label="Real rollout video and paper-reported values">
+            <video
+              id="methodVideo"
+              src="assets/video/medicine_right_demo.mp4"
+              poster="assets/frames/medicine_right/medicine_right_12pct_t10p087s_960w.jpg"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <figcaption>
+              <span id="methodVideoLabel">Medicine / early tray cue</span>
+              <strong id="methodVideoTitle">A visible cue is written before the branch.</strong>
+            </figcaption>
+            <div class="method-metrics" aria-label="Paper-reported values for this stage">
+              <div class="method-metric">
+                <span id="methodMetricOneLabel">Task suite</span>
+                <strong id="methodMetricOne">5 real robot tasks</strong>
+              </div>
+              <div class="method-metric">
+                <span id="methodMetricTwoLabel">Physical evaluation</span>
+                <strong id="methodMetricTwo">25 rollouts per task</strong>
+              </div>
+            </div>
+          </figure>
         </div>
       </section>
 
@@ -334,10 +481,10 @@
         <div class="narrow">
           <p class="section-kicker">Visual Source Boundary</p>
           <p>
-            Every raster figure displayed on this page was generated from a figure explicitly
-            referenced in <code>CoRL_PRISM/corl_2026_prism/main.tex</code>: delayed-evidence
-            overview, signal diagram, task overview, rollout results, and training/inference
-            overview. No extra paper-unseen photo frames are used.
+            Figures on this page come from assets referenced in
+            <code>CoRL_PRISM/corl_2026_prism/main.tex</code>. The hero background and method panel
+            use lightweight clips derived from task videos in
+            <code>CoRL_PRISM/corl_2026_prism/videos</code>.
           </p>
         </div>
       </section>
