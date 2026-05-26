@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TRACE | Trajectory-Routed Causal Memory</title>
+    <meta
+      name="description"
+      content="Research page for TRACE: Trajectory-Routed Causal Memory for Delayed-Evidence Visuomotor Imitation."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="scroll-meter" aria-hidden="true"><span id="scrollMeter"></span></div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="TRACE home">
+        <span class="brand-mark">TRACE</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#problem">Problem</a>
+        <a href="#method">Method</a>
+        <a href="#tasks">Tasks</a>
+        <a href="#results">Results</a>
+        <a href="#implementation">Implementation</a>
+      </nav>
+      <a class="header-action" href="assets/paper/trace-paper.pdf">PDF</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="heroTitle">
+        <img
+          class="hero-image"
+          src="assets/figures/teaser.png"
+          alt="Delayed-evidence overview figure for TRACE"
+        />
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">CoRL 2026 Submission / Real Robot Delayed-Evidence Manipulation</p>
+          <h1 id="heroTitle">
+            TRACE: Trajectory-Routed Causal Memory for Delayed-Evidence Visuomotor Imitation
+          </h1>
+          <p class="hero-lede">
+            TRACE stores task evidence while it is visible, routes that evidence through a
+            path-signature memory, and reads it back when the robot reaches an ambiguous branch.
+          </p>
+          <div class="hero-actions" aria-label="Paper links">
+            <a href="assets/paper/trace-paper.pdf">Read paper</a>
+            <a href="#results">View results</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="paper-strip" aria-label="Paper summary">
+        <div>
+          <span class="meta-label">Policy families</span>
+          <strong>Regression + Diffusion</strong>
+        </div>
+        <div>
+          <span class="meta-label">Memory form</span>
+          <strong>Fixed-slot causal memory</strong>
+        </div>
+        <div>
+          <span class="meta-label">Routing key</span>
+          <strong>Depth-3 path signatures</strong>
+        </div>
+        <div>
+          <span class="meta-label">Evaluation</span>
+          <strong>5 real robot tasks</strong>
+        </div>
+      </section>
+
+      <section class="abstract-section">
+        <div class="narrow">
+          <p class="section-kicker">Abstract</p>
+          <p class="abstract-copy">
+            Long-horizon robot manipulation can require a robot to choose between task alternatives
+            using evidence that is no longer visible. TRACE adds a compact online memory to
+            visuomotor imitation policies. It writes visual-state evidence into fixed-size latent
+            slots, organizes access with streamed path and delta signatures, and exposes the memory
+            through lightweight adapters while leaving the policy backbone, action head, and
+            imitation objective unchanged.
+          </p>
+        </div>
+        <figure class="paper-figure teaser-full">
+          <img src="assets/figures/teaser.png" alt="TRACE delayed-evidence overview figure" />
+          <figcaption>
+            Delayed-evidence overview: the early cue is no longer visible at the branch point, so a
+            short-history policy can choose the wrong continuation.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="problem-section" id="problem">
+        <div class="section-head">
+          <p class="section-kicker">Problem</p>
+          <h2>Current observations can match, while correct actions diverge.</h2>
+        </div>
+
+        <div class="problem-layout">
+          <article class="memory-flow" aria-label="Delayed-evidence sequence">
+            <div class="flow-node active" data-node="0">
+              <span>01</span>
+              <strong>Early cue</strong>
+              <p>The robot sees evidence such as object origin, garment side, or tray source.</p>
+            </div>
+            <div class="flow-node" data-node="1">
+              <span>02</span>
+              <strong>Shared transit</strong>
+              <p>The cue leaves view while different histories pass through similar observations.</p>
+            </div>
+            <div class="flow-node" data-node="2">
+              <span>03</span>
+              <strong>Ambiguous branch</strong>
+              <p>The next action depends on the causal history rather than the current frame alone.</p>
+            </div>
+            <div class="flow-node" data-node="3">
+              <span>04</span>
+              <strong>Memory readout</strong>
+              <p>TRACE conditions the action policy on the stored evidence at decision time.</p>
+            </div>
+          </article>
+
+          <aside class="equation-panel" aria-label="Delayed evidence condition">
+            <p class="equation">
+              x<sub>t-w+1:t</sub> &asymp; x'<sub>t-w+1:t</sub><br />
+              a<sup>*</sup><sub>t</sub>(H<sub>t</sub>) &ne;
+              a<sup>*</sup><sub>t</sub>(H'<sub>t</sub>)
+            </p>
+            <p>
+              A short observation window contains the latest information, but not necessarily the
+              decisive early evidence. The paper frames this as a delayed-evidence imitation
+              setting where the policy needs a fixed-size causal history summary.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="method-section" id="method">
+        <div class="section-head">
+          <p class="section-kicker">Method</p>
+          <h2>A routed memory layer around unchanged imitation policies.</h2>
+        </div>
+
+        <figure class="paper-figure figure-wide">
+          <img src="assets/figures/signal_diagram.png" alt="TRACE signal flow figure" />
+          <figcaption>
+            TRACE signal flow: visual-state evidence becomes memory content, path signatures become
+            trajectory addresses, and the adapter returns compact conditioning to the base policy.
+          </figcaption>
+        </figure>
+
+        <div class="method-grid">
+          <button class="method-step active" type="button" data-step="write">
+            <span>Write</span>
+            <strong>Encode current evidence</strong>
+          </button>
+          <button class="method-step" type="button" data-step="route">
+            <span>Route</span>
+            <strong>Address by path signature</strong>
+          </button>
+          <button class="method-step" type="button" data-step="read">
+            <span>Read</span>
+            <strong>Select relevant slots</strong>
+          </button>
+          <button class="method-step" type="button" data-step="adapt">
+            <span>Adapt</span>
+            <strong>Condition policy family</strong>
+          </button>
+        </div>
+
+        <div class="method-detail">
+          <div>
+            <p class="section-kicker" id="methodKicker">Write</p>
+            <h3 id="methodTitle">Visual-state evidence is stored when the cue is visible.</h3>
+            <p id="methodCopy">
+              Current RGB and proprioceptive features form the memory content, so the module stores
+              the evidence before it disappears from the camera view.
+            </p>
+          </div>
+          <div class="slot-visual" aria-label="Illustrative memory slot activity">
+            <span style="--level: 78%"></span>
+            <span style="--level: 36%"></span>
+            <span style="--level: 62%"></span>
+            <span style="--level: 22%"></span>
+            <span style="--level: 54%"></span>
+            <span style="--level: 44%"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="tasks-section" id="tasks">
+        <div class="section-head">
+          <p class="section-kicker">Task Suite</p>
+          <h2>Five tasks ask the same question: can the policy remember the missing cue?</h2>
+        </div>
+
+        <figure class="paper-figure">
+          <img src="assets/figures/tasks_overview.png" alt="Delayed-evidence task overview" />
+          <figcaption>
+            Task-suite overview. The evaluated scenarios cover object identity, origin-conditioned
+            routes, garment-side decisions, cable-device matching, and medicine tray return.
+          </figcaption>
+        </figure>
+
+        <div class="task-grid" aria-label="Delayed-evidence tasks">
+          <article>
+            <span>Tool</span>
+            <h3>Object identity determines a later tool sequence.</h3>
+            <p>Initial identity is visible early, then must guide a later sequence choice.</p>
+          </article>
+          <article>
+            <span>Book</span>
+            <h3>Origin determines route and placement.</h3>
+            <p>The book travels through a similar path, but the final place depends on origin.</p>
+          </article>
+          <article>
+            <span>Laundry</span>
+            <h3>Origin side chooses brush or fold.</h3>
+            <p>Garments reach a common workspace before the correct branch is selected.</p>
+          </article>
+          <article>
+            <span>Cable</span>
+            <h3>Source side determines the matched device.</h3>
+            <p>Similar cable observations hide which functional source should be remembered.</p>
+          </article>
+          <article>
+            <span>Medicine</span>
+            <h3>Tray origin controls box selection and return.</h3>
+            <p>The same object must be associated with its earlier tray through later decisions.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="results-section" id="results">
+        <div class="section-head">
+          <p class="section-kicker">Results</p>
+          <h2>TRACE improves stage progress across delayed-evidence manipulation.</h2>
+        </div>
+
+        <div class="results-tabs" role="tablist" aria-label="Result tables">
+          <button class="active" type="button" data-result="main">Main comparison</button>
+          <button type="button" data-result="memory">Memory modules</button>
+          <button type="button" data-result="diagnostics">Diagnostics</button>
+        </div>
+
+        <div class="results-layout">
+          <div class="chart-panel">
+            <div class="chart-title">
+              <span id="chartTitle">Average stage progress</span>
+              <strong id="chartUnit">%</strong>
+            </div>
+            <div class="bar-chart" id="barChart" aria-label="Result bar chart"></div>
+          </div>
+          <div class="result-copy">
+            <p class="section-kicker" id="resultKicker">Main comparison</p>
+            <h3 id="resultTitle">Causal memory helps when evidence has left view.</h3>
+            <p id="resultText">
+              TRACE Regression reaches 69.23 average progress and TRACE Diffusion reaches 59.53,
+              compared with 25.50 for ACT and 25.00 for Diffusion Policy.
+            </p>
+            <dl>
+              <div>
+                <dt>Best reported average</dt>
+                <dd id="resultStatA">69.23 TRACE Regression</dd>
+              </div>
+              <div>
+                <dt>Task count</dt>
+                <dd id="resultStatB">5 physical delayed-evidence tasks</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <figure class="paper-figure figure-wide">
+          <img
+            src="assets/figures/rollout_results_combined.png"
+            alt="Book rollout results and memory diagnostics"
+          />
+          <figcaption>
+            The rollout figure shows early cue, ambiguous transit, target selection, and memory
+            signals for the Book task.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="implementation-section" id="implementation">
+        <div class="section-head">
+          <p class="section-kicker">Implementation</p>
+          <h2>The codebase mirrors the paper split: updater, adapter, and deployment path.</h2>
+        </div>
+
+        <figure class="paper-figure">
+          <img
+            src="assets/figures/train_inference_overview.png"
+            alt="TRACE training and inference consistency"
+          />
+          <figcaption>
+            Training scans a masked fixed-budget causal history; deployment applies the same updater
+            once per executed step.
+          </figcaption>
+        </figure>
+
+        <div class="implementation-grid">
+          <article>
+            <span>StreamingACT</span>
+            <h3>Regression adapter</h3>
+            <p>
+              <code>lerobot_policy_streaming_act</code> exposes path signatures, delta signatures,
+              visual prefix memory, and signature-indexed slot memory for action chunking.
+            </p>
+          </article>
+          <article>
+            <span>PrismDiffusion</span>
+            <h3>Diffusion adapter</h3>
+            <p>
+              <code>lerobot_policy_prism_diffusion</code> serializes the same memory controls and
+              maps the memory readout into diffusion conditioning.
+            </p>
+          </article>
+          <article>
+            <span>Runtime</span>
+            <h3>Online signatures</h3>
+            <p>
+              Deployment preprocessing accepts <code>observation.path_signature</code> and
+              <code>observation.delta_signature</code>, matching the paper's causal online
+              interface.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-section" aria-label="Visual source map">
+        <div class="narrow">
+          <p class="section-kicker">Visual Source Boundary</p>
+          <p>
+            Every raster figure displayed on this page was generated from a figure explicitly
+            referenced in <code>CoRL_PRISM/corl_2026_prism/main.tex</code>: delayed-evidence
+            overview, signal diagram, task overview, rollout results, and training/inference
+            overview. No extra paper-unseen photo frames are used.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>TRACE research page</span>
+      <a href="assets/paper/main.tex">LaTeX source copy</a>
+      <a href="assets/paper/trace-paper.pdf">Paper PDF</a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
